@@ -133,7 +133,8 @@ TweetCfg.prototype.set_cookie = function() {
 
 TweetCfg.prototype.get_cookie = function() {
   var that = this;
-  jQuery.each(jQuery.cookie('little_boxes').split('<'), function(index, row) {
+  var rows = jQuery.cookie('little_boxes');
+  if (rows) jQuery.each(rows.split('<'), function(index, row) {
     var values = row.split('>');
     that.add_box.apply(that, values);
   });
