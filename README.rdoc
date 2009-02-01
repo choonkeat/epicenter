@@ -1,0 +1,19 @@
+== Description
+
+HTML dashboard for Twitter. Feel free to help make this prettier.
+
+== See it in action
+
+Go to http://epicenter.choonkeat.com/
+
+== Launch your own
+
+Open index.html in your browser.
+
+== License
+
+GPL
+
+== TODO
+
+I'm missing "groups" feature.
