@@ -16,4 +16,4 @@ GPL
 
 == TODO
 
-I'm missing "groups" feature.
+I'm missing "groups" & update status.

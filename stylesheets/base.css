@@ -84,17 +84,19 @@ h2 button {
   margin-top: 0;
   margin-left: 0;
   text-indent: 0;
-  xheight: 980px;
-  xoverflow: hidden;
+  height: 960px;
+  overflow: hidden;
 }
 
 .tweet .tweet {
   margin-left: 1.5em;
+  opacity: 1;
+  filter:alpha(opacity=100);
 }
 
 .tweet {
   clear: both;
-  padding: 0.5em;
+  min-height: 60px;
   opacity: 0.4;
   filter:alpha(opacity=40);
 }
@@ -134,5 +136,9 @@ li.tweet:hover {
 }
 
 .tweet .source {
+  display: inline;
+}
+
+.tweet .reply {
   display: inline;
 }

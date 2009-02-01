@@ -19,7 +19,7 @@ var TweetBox = function(atitle, aurl, aremovable, asince_id, aread_id) {
   console.log("TweetBox.new", arguments);
   this.title = atitle; this.element_id = atitle.replace(/\W+/, '-');
   this.url = aurl;
-  this.removable = aremovable;
+  this.removable = (aremovable && aremovable != "false");
   this.since_id = null; // asince_id;
   this.read_id = aread_id;
 }
@@ -104,6 +104,7 @@ TweetBox.prototype.load = function(everything) {
     that.json = json;
     $(that.json).each(function(index, ele) {
       ele.created_at_ago = '#';
+      if (ele.source) ele.source = ele.source.replace(/^<a /, '<a target="_blank" ');
       ele.text = ele.text.replace(/(\w+:\/\/\S+)/, '<a href="$1" target="_blank">$1</a>');
       if (ele.in_reply_to_screen_name) {
         // link to reply or profile, based on api data
@@ -127,7 +128,7 @@ TweetBox.prototype.load = function(everything) {
       if (! ele.source) jQuery('.source', new_ele).remove();
       if (ele.in_reply_to_status_id) {
         setTimeout(function() {
-          var in_reply_to = jQuery('.tweet-' + ele.in_reply_to_status_id);
+          var in_reply_to = jQuery('.tweet-' + ele.in_reply_to_status_id, ol);
           if (in_reply_to.length > 0) {
             in_reply_to.append(new_ele);
           }
@@ -137,7 +138,7 @@ TweetBox.prototype.load = function(everything) {
     jQuery('li:gt(19)', ol).remove();
     jQuery('li .ago', ol).each(function(index, link) { jQuery(link).html(that.time_ago(link.title)); });
     that.mark_since();
-    if (that.read_id) jQuery('li.tweet-' + that.read_id).removeClass('unread').nextAll().removeClass('unread');
+    if (that.read_id) jQuery('li.tweet-' + that.read_id, ol).removeClass('unread').nextAll().removeClass('unread');
   });
 }
 

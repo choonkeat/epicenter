@@ -35,7 +35,10 @@ var TweetCfg = function(options) {
   "{screen_name}/status/{id}\" class=\"ago\" title=\"{" +
   "created_at}\">\n      {created_at_ago}\n    </a>\n " +
   " </div>\n  <div class=\"source\">\n    via {source}" +
-  "\n  </div>\n</li>";
+  "\n  </div>\n  <div class=\"reply\">\n    <a target=" +
+  "\"_blank\" href=\"http://twitter.com/home?status=@{" +
+  "screen_name}+\" title=\"Reply to this message\">\n " +
+  "     &raquo;reply\n    </a>\n  </div>\n</li>";
   this.status_link =
   "<a href=\"http://twitter.com/{name}/statuses/{id}\"" +
   " target=\"_blank\">@{name}</a>";
