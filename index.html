@@ -1,0 +1,46 @@
+<link type="text/css" rel="stylesheet" href="/stylesheets/base.css" />
+<h1 title="named after the cafe this is written at">
+  Epicenter
+  <button class="configure">configure</button>
+</h1>
+<form id="configuration" action='#' style="display: none;">
+  <fieldset><legend>Settings</legend>
+  <dl>
+    <dd>
+      <input type="checkbox" id="friends_option" name="Friends" title="http://twitter.com/statuses/friends_timeline.json" />
+      <label for="friends_option" title="Show tweets from friends">Show friends</label>
+    </dd>
+    <dd>
+      <input type="checkbox" id="replies_option" name="Replies" title="http://twitter.com/statuses/replies.json" />
+      <label for="replies_option" title="Show replies to you">Show replies</label>
+    </dd>
+    <!-- <dd>
+      <input type="checkbox" id="DirectMessage" />
+      <label for="DirectMessage" title="Show your direct messages">Direct messages</label>
+    </dd> -->
+    <dd>
+      <input type="text" name="search" id="search" title="http://search.twitter.com/search.json?q=" />
+      <button type="submit" id="search_button">New search</button>
+    </dd>
+    <!-- <dd>
+      <input type="text" name="group" id="group" />
+      <button type="submit" id="group_button">New group</button>
+    </dd> -->
+  </dl>
+  <button class="configure">close</button>
+  </fieldset>
+</form>
+<div id="content">
+</div>
+<pre class="blurb">
+1. Authenticate directly with twitter.com - No middle man.
+2. Click "configure" to begin...
+</pre>
+<pre class="blurb" style="font-size: 10px">
+&copy; 2009 | <a href="http://blog.choonkeat.com">Chew Choon Keat</a>
+</pre>
+<script src="/javascripts/jquery-1.3.1.js"></script>
+<script src="/javascripts/jquery.cookie.js"></script>
+<script src="/javascripts/tweet_cfg.js"></script>
+<script src="/javascripts/tweet_box.js"></script>
+<script src="/javascripts/application.js"></script>
