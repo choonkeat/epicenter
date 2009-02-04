@@ -8,7 +8,7 @@ Go to http://epicenter.choonkeat.com/
 
 == Launch your own
 
-Open index.html in your browser.
+Open "example.html" in your browser.
 
 == License
 
@@ -16,4 +16,4 @@ GPL
 
 == TODO
 
-I'm missing "groups" & update status.
+I'm missing update status.

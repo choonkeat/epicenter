@@ -48,22 +48,61 @@ var TweetCfg = function(options) {
   this.root = jQuery('#content');
 
   var that = this;
-  jQuery("#configuration input[type='checkbox']").change(function(event) {
+  jQuery("#configuration input[type='checkbox']").click(function(event) {
     var checkbox = event.target;
     if (checkbox.checked) {
-      that.load_box(that.add_box(checkbox.name, checkbox.title, false)); 
+      that.add_box(checkbox.name, settings.urls[checkbox.id], false).load();
     } else {
-      that.unload(checkbox.title);
+      console.log("Unload ", settings.urls[checkbox.id]);
+      that.unload(settings.urls[checkbox.id]);
     }
   });
   jQuery("#search_button").click(function(event) {
-    event.preventDefault();
-    that.load_box(that.add_box("Search: " + jQuery('#search').val(), jQuery('#search')[0].title + encodeURIComponent(jQuery('#search').val()), true));
+    event.preventDefault(); event.stopPropagation();
+    var field = jQuery('input', jQuery(this).parents('dl'))[0];
+    var box = that.add_box("Search: " + field.value, settings.urls.search_url.supplant({query: encodeURIComponent(field.value)}), "removable");
+    box.load();
+    window.location.hash = '#' + box.element_id;
   });
   jQuery("#group_button").click(function(event) {
-    event.preventDefault();
+    event.preventDefault(); event.stopPropagation();
+    var field = jQuery('input', jQuery(this).parents('dl'))[0];
+    var custom_query = 'from:' + jQuery('#screennames').val().replace(/[,\s]+$/, '').split(/[,\s]+/).join(' OR from:');
+    var box = that.add_box(field.value, settings.urls.search_url.supplant({query: encodeURIComponent(custom_query)}), "removable");
+    box.load();
+    window.location.hash = '#' + box.element_id;
   });
-  jQuery('.configure').click(function() { jQuery("#configuration").toggle('fast'); });
+  jQuery('.configure').click(function() { 
+    (jQuery("#configuration:visible")[0] ? $(this).html("show settings") : $(this).html("hide settings"));
+    jQuery("#configuration").toggle('fast');
+  });
+  jQuery('#screennames,#group').focus(function() {
+    if (! that.friends_names) {
+      that.friends_names = [];
+      jQuery.getJSON(settings.urls.friends_url, function(json) {
+        jQuery(json).each(function(index, ele) { that.friends_names.push(ele.screen_name); });
+        that.set_autocomplete(that.friends_names, "undo");
+        var field = jQuery('#screennames')[0];
+        if (document.activeElement == field) { field.blur(); field.focus(); }
+      });
+    }
+  });
+  jQuery('#clear_button').click(function() {
+    if (confirm("This removes ALL standard, searches & groups sections. Proceed?")) {
+      jQuery.cookie('little_boxes', null, { expires: 365 });
+      window.location.reload(true);
+    }
+  });
+}
+
+TweetCfg.prototype.set_autocomplete = function(new_array, undo_earlier) {
+  if (undo_earlier) jQuery('#screennames').unautocomplete();
+  console.log("set autocomplete", new_array.length, new_array);
+  $("#screennames").autocomplete(new_array, {
+    multiple: true,
+    mustMatch: false,
+    autoFill: true
+  });
 }
 
 TweetCfg.prototype.add_box = function(atitle, aurl, aremovable, asince_id, aread_id) {
@@ -97,33 +136,19 @@ TweetCfg.prototype.unload = function(box_url) {
   this.set_cookie();
 }
 
-TweetCfg.prototype.load_box = function(box) {
-  // http://apiwiki.twitter.com/REST+API+Documentation#RateLimiting
-  var max_msec = 3600 * 1000;
-  var max_count = 100;
-  
-  var now = new Date();
-  if (! this.calls) this.calls = [now];
-  while ((now - this.calls[this.calls.length-1]) > max_msec) {
-    var old = this.calls.pop();
-    console.log("popped old: ", old, this.calls.length);
-  }
-  if (this.calls.length < max_count) {
-    this.calls.push(now);
-    box.load();
-  } else {
-    console.log("throttling", this.calls[this.calls.length-1]);
-  }
-}
-
 TweetCfg.prototype.refresh = function(interval) {
   var that = this;
+  if (that.refresh_timeout) clearTimeout(that.refresh_timeout);
   jQuery(this.active_boxes).each(function(index, box) {
-    that.load_box(box);
+    setTimeout(function() { box.load(); }, index * 1000);
   });
-  if (interval) {
-    that.refresh_timeout = setTimeout(function() { that.refresh(interval); }, interval);
-  }
+  var now = new Date();
+  jQuery("#last_updated_at").html(
+    "Last updated: " +
+    (now.getHours() < 10 ? '0' : '') + now.getHours() + ":" +
+    (now.getMinutes() < 10 ? '0' : '') + now.getMinutes()
+  );
+  that.refresh_timeout = setTimeout(function() { that.refresh(interval); }, (this.active_boxes.length * 1000) + interval);
 }
 
 TweetCfg.prototype.set_cookie = function() {
@@ -132,11 +157,13 @@ TweetCfg.prototype.set_cookie = function() {
     cookie_array.push([box.title, box.url, box.removable, box.since_id, box.read_id].join('>'));
   })
   jQuery.cookie('little_boxes', cookie_array.join('<'), { expires: 365 });
+  console.log("cookie set:", cookie_array.join('<'));
 }
 
 TweetCfg.prototype.get_cookie = function() {
   var that = this;
   var rows = jQuery.cookie('little_boxes');
+  console.log("cookie get:", rows);
   if (rows) jQuery.each(rows.split('<'), function(index, row) {
     var values = row.split('>');
     that.add_box.apply(that, values);
