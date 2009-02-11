@@ -18,21 +18,53 @@
 /*
  * Plucks "<li>" elements (individual tweets) and place them
  * under corresponding tweets, creating conversation threads
+ *
+ * if corresponding tweet cannot be found, add a "see thread"
+ * link, and dynamically pull it in if user clicks
  */
-Box.add_after_hook(function(index, item) {
-  var that = this;
-  if (item.in_reply_to_status_id) {
-    setTimeout(function() {
-      var new_item = jQuery('.tweet-' + item.id, that.ol);
-      var in_reply_to = jQuery('.tweet-' + item.in_reply_to_status_id, that.ol);
-      if (in_reply_to.length > 0) {
-        if ((that.read_id == item.in_reply_to_status_id) && in_reply_to.next()[0]) {
-          var match = "" + in_reply_to.next()[0].className.match(/tweet-(\d+)/);
-          that.mark_read(match[0]);
-        }
-        in_reply_to.insertBefore(new_item);
-        in_reply_to.append(new_item);
-      }
-    }, 500);
+(function() {
+  function get_in_reply_to(that, item) {
+    var in_reply_to = jQuery('.tweet-' + item.in_reply_to_status_id, that.ol);
+    while (in_reply_to.parents('.tweet')[0]) { in_reply_to = in_reply_to.parents('.tweet'); }
+    return in_reply_to;
   }
-});
+
+  function add_thread_link(that, item) {
+    var new_item = jQuery('.tweet-' + item.id, that.ol);
+    var see_thread = jQuery('<a href="#" class="thread-link">see thread</a>');
+    see_thread.appendTo(new_item).click(function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var in_reply_to = get_in_reply_to(that, item);
+      if (in_reply_to.length > 0) return attach_to_parent(that, item);
+      var status_url = settings.urls.status_url.supplant({ status_id: item.in_reply_to_status_id });
+      jQuery.getJSON(status_url, function(json) {
+        console.log("individual tweet", json);
+        that.insert_tweets([json]);
+        see_thread.unbind().remove();
+        attach_to_parent(that, item);
+        new_item.removeClass('unread');
+      });
+    });
+  }
+
+  function attach_to_parent(that, item) {
+    var new_item = jQuery('.tweet-' + item.id, that.ol);
+    var in_reply_to = get_in_reply_to(that, item);
+    if (in_reply_to.length > 0) {
+      if ((that.read_id == item.in_reply_to_status_id) && in_reply_to.next()[0]) {
+        var match = "" + in_reply_to.next()[0].className.match(/tweet-(\d+)/);
+        that.mark_read(match[0]);
+      }
+      in_reply_to.insertBefore(new_item);
+      in_reply_to.append(new_item);
+    } else {
+      add_thread_link(that, item);
+    }
+  }
+
+  Box.add_after_hook(function(index, item) {
+    var that = this;
+    if (item.in_reply_to_status_id) setTimeout(function() { attach_to_parent(that, item); }, 500);
+  });
+})();

@@ -37,8 +37,8 @@ var Cfg = function(options) {
   "v class=\"source\">\n    via {source}\n  </div>\n  " +
   "<div class=\"reply\">\n    <a target=\"_blank\" hre" +
   "f=\"http://twitter.com/home?status=@{screen_name}+" +
-  "\" title=\"Reply to this message\">\n      &raquo;r" +
-  "eply\n    </a>\n  </div>\n</li>";
+  "\" title=\"Reply to this message\">&raquo;reply</a>" +
+  "\n  </div>\n</li>";
   this.status_link =
   "<a href=\"http://twitter.com/{name}/statuses/{id}\"" +
   " target=\"_blank\">@{name}</a>";

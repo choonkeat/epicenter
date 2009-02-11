@@ -161,3 +161,7 @@ li.tweet:hover {
 .tweet .reply {
   display: inline;
 }
+
+.tweet .thread-link {
+  margin-left: 3px;
+}

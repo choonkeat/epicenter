@@ -114,16 +114,7 @@ Box.prototype.load = function() {
     composite_url += '&since_id=' + that.read_id;
   }
   jQuery.getJSON(composite_url, function(json) {
-    json = ((json && json.results) || json);
-    json.unshift(0, 0);
-    that.json.splice.apply(that.json, json);
-    that.json.splice(settings.max_json);
-    that.last_inserted = null;
-    $(json.splice(2)).each(function() { that.render_tweet.apply(that, arguments); } );
-    jQuery('li:gt(19)', that.ol).remove();
-    jQuery('li .ago', that.ol).each(function(index, link) { jQuery(link).html(that.time_ago(link.title)); });
-    that.mark_since();
-    if (that.read_id) jQuery('li.tweet-' + that.read_id, that.ol).removeClass('unread').nextAll().removeClass('unread');
+    that.insert_tweets(json);
   });
 }
 
@@ -148,6 +139,20 @@ Box.prototype.time_ago = function(str) {
   } else {
     return quantity((diff_minutes / 43200), "month") + ' ago';
   }
+}
+
+Box.prototype.insert_tweets = function(json) {
+  var that = this;
+  json = ((json && json.results) || json);
+  json.unshift(0, 0);
+  that.json.splice.apply(that.json, json);
+  that.json.splice(settings.max_json);
+  that.last_inserted = null;
+  $(json.splice(2)).each(function() { that.render_tweet.apply(that, arguments); } );
+  jQuery('li:gt(19)', that.ol).remove();
+  jQuery('li .ago', that.ol).each(function(index, link) { jQuery(link).html(that.time_ago(link.title)); });
+  that.mark_since();
+  if (that.read_id) jQuery('li.tweet-' + that.read_id, that.ol).removeClass('unread').nextAll().removeClass('unread');
 }
 
 Box.prototype.render_tweet = function(index, item) {
