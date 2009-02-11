@@ -18,7 +18,7 @@
 var TweetBox = function(atitle, aurl, aremovable, asince_id, aread_id) {
   console.log("TweetBox.new", arguments);
   this.title = atitle;
-  this.element_id = atitle.replace(/\W+/, '-');
+  this.element_id = atitle.replace(/\W+/g, '-');
   var suffix = "";
   while (jQuery('#' + this.element_id + suffix).length > 0) {
     suffix = (suffix * 1) + 1;
@@ -59,12 +59,12 @@ TweetBox.prototype.create = function() {
   this.read_button().click(function(event) {
     event.preventDefault();
     event.stopPropagation();
-    that.mark_read();
     if (jQuery('ol li.unread', that.ele()).length > 0) {
-      // jQuery('ol li:visible:lt(10)', that.ele()).removeClass('unread', 'slow');
       jQuery('ol li', that.ele()).removeClass('unread', 'slow');
+      that.mark_read();
     } else {
-      jQuery('ol li', that.ele()).toggleClass('unread');
+      jQuery('ol li', that.ele()).addClass('unread');
+      that.mark_read('');
     }
   });
 
@@ -82,7 +82,7 @@ TweetBox.prototype.create = function() {
 }
 
 TweetBox.prototype.mark_read = function(some_id) {
-  if (some_id) {
+  if (some_id != null) {
     this.read_id = some_id;
   } else if (this.json && this.json[0]) {
     this.read_id = this.json[0].id;
@@ -96,6 +96,7 @@ TweetBox.prototype.mark_since = function(some_id) {
   } else if (this.json && this.json[0]) {
     this.since_id = this.json[0].id;
   }
+  config.set_cookie();
 }
 
 TweetBox.prototype.load = function() {
@@ -113,26 +114,25 @@ TweetBox.prototype.load = function() {
   }
   jQuery.getJSON(composite_url, function(json) {
     json = ((json && json.results) || json);
-    if (! json[0]) return;
-
     json.unshift(0, 0);
     that.json.splice.apply(that.json, json);
     that.json.splice(settings.max_json);
     var last_inserted = null;
     $(json.splice(2)).each(function(index, item) {
       item.created_at_ago = '#';
-      if (item.source) item.source = item.source.replace(/^<a /, '<a target="_blank" ');
-      item.text = item.text.replace(/(\w+:\/\/\S+)/, '<a href="$1" target="_blank">$1</a>');
+      if (item.source) item.source = item.source.replace(/^<a /g, '<a target="_blank" ');
+      item.text = item.text.replace(/(\w+:\/\/\S+)/g, '<a href="$1" target="_blank">$1</a>');
       if (item.in_reply_to_screen_name) {
         // link to reply or profile, based on api data
         var replace_with = (item.in_reply_to_status_id ? config.status_link : config.profile_link).supplant({
           name:item.in_reply_to_screen_name,
           id: (item.in_reply_to_status_id || '')
         });
-        item.text = item.text.replace('@' + item.in_reply_to_screen_name, replace_with);
+        var replyto_regexp = new RegExp('@' + item.in_reply_to_screen_name, 'gi')
+        item.text = item.text.replace(replyto_regexp, replace_with);
       } else {
         // no api info, guesstimating
-        item.text = item.text.replace(/(@(\w+))/, config.profile_link.supplant({ name: "$2"}));
+        item.text = item.text.replace(/(@(\w+))/g, config.profile_link.supplant({ name: "$2"}));
       }
       
       if (! item.user) item.user = { screen_name: item.from_user, name: item.from_user }
@@ -144,6 +144,11 @@ TweetBox.prototype.load = function() {
         setTimeout(function() {
           var in_reply_to = jQuery('.tweet-' + item.in_reply_to_status_id, that.ol);
           if (in_reply_to.length > 0) {
+            if ((that.read_id == item.in_reply_to_status_id) && in_reply_to.next()[0]) {
+              var match = "" + in_reply_to.next()[0].className.match(/tweet-(\d+)/);
+              that.mark_read(match[0]);
+            }
+            in_reply_to.insertBefore(new_item);
             in_reply_to.append(new_item);
           }
         }, 500);

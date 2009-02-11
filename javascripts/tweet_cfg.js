@@ -28,17 +28,17 @@ var TweetCfg = function(options) {
   "s=\"author\">\n    <img src=\"{profile_image_url}\"" +
   " />\n  </div>\n  <div class=\"name\" title=\"{name}" +
   " : {description}\">\n    <a target=\"_blank\" href=" +
-  "\"http://twitter.com/{screen_name}\">\n      {scree" +
-  "n_name}\n    </a>\n  </div>\n  <div class=\"message" +
-  "\">\n    {text}\n  </div>\n  <div class=\"link\">\n" +
-  "    <a target=\"_blank\" href=\"http://twitter.com/" +
-  "{screen_name}/status/{id}\" class=\"ago\" title=\"{" +
-  "created_at}\">\n      {created_at_ago}\n    </a>\n " +
-  " </div>\n  <div class=\"source\">\n    via {source}" +
-  "\n  </div>\n  <div class=\"reply\">\n    <a target=" +
-  "\"_blank\" href=\"http://twitter.com/home?status=@{" +
-  "screen_name}+\" title=\"Reply to this message\">\n " +
-  "     &raquo;reply\n    </a>\n  </div>\n</li>";
+  "\"http://twitter.com/{screen_name}\">{screen_name}<" +
+  "/a>\n  </div>\n  <div class=\"message\">\n    {text" +
+  "}\n  </div>\n  <div class=\"link\">\n    <a target=" +
+  "\"_blank\" href=\"http://twitter.com/{screen_name}/" +
+  "status/{id}\" class=\"ago\" title=\"{created_at}\">" +
+  "\n      {created_at_ago}\n    </a>\n  </div>\n  <di" +
+  "v class=\"source\">\n    via {source}\n  </div>\n  " +
+  "<div class=\"reply\">\n    <a target=\"_blank\" hre" +
+  "f=\"http://twitter.com/home?status=@{screen_name}+" +
+  "\" title=\"Reply to this message\">\n      &raquo;r" +
+  "eply\n    </a>\n  </div>\n</li>";
   this.status_link =
   "<a href=\"http://twitter.com/{name}/statuses/{id}\"" +
   " target=\"_blank\">@{name}</a>";
@@ -101,6 +101,7 @@ TweetCfg.prototype.set_autocomplete = function(new_array, undo_earlier) {
   $("#screennames").autocomplete(new_array, {
     multiple: true,
     mustMatch: false,
+    matchContains: true,
     autoFill: true
   });
 }

@@ -26,7 +26,3 @@ if (!window.console) window.console = { log: function() {} };
 var config = new TweetCfg();
 config.get_cookie();
 config.refresh(settings.refresh);
-window.onbeforeunload = function (evt) {
-  config.set_cookie();
-  return null;
-}
