@@ -15,7 +15,7 @@
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-var TweetCfg = function(options) {
+var Cfg = function(options) {
   this.active_boxes = [];
   this.active_boxes_hash = {};
   this.box_html =
@@ -95,7 +95,7 @@ var TweetCfg = function(options) {
   });
 }
 
-TweetCfg.prototype.set_autocomplete = function(new_array, undo_earlier) {
+Cfg.prototype.set_autocomplete = function(new_array, undo_earlier) {
   if (undo_earlier) jQuery('#screennames').unautocomplete();
   console.log("set autocomplete", new_array.length, new_array);
   $("#screennames").autocomplete(new_array, {
@@ -106,13 +106,13 @@ TweetCfg.prototype.set_autocomplete = function(new_array, undo_earlier) {
   });
 }
 
-TweetCfg.prototype.add_box = function(atitle, aurl, aremovable, asince_id, aread_id) {
+Cfg.prototype.add_box = function(atitle, aurl, aremovable, asince_id, aread_id) {
   var new_box = null;
   jQuery(this.active_boxes).each(function(index, old_box) {
     if (old_box.url == aurl) new_box = old_box
   });
   if (!new_box) {
-    new_box = new TweetBox(atitle, aurl, aremovable, asince_id, aread_id);
+    new_box = new Box(atitle, aurl, aremovable, asince_id, aread_id);
     this.active_boxes.push(new_box);
     this.active_boxes_hash[new_box.element_id] = new_box;
     jQuery("#configuration input[name='" + new_box.element_id + "']").each(function(index, checkbox) {
@@ -123,7 +123,7 @@ TweetCfg.prototype.add_box = function(atitle, aurl, aremovable, asince_id, aread
   return new_box;
 }
 
-TweetCfg.prototype.unload = function(box_url) {
+Cfg.prototype.unload = function(box_url) {
   var box_index = null;
   jQuery(this.active_boxes).each(function(index, cfg) {
     if (cfg.url == box_url) box_index = index;
@@ -137,7 +137,7 @@ TweetCfg.prototype.unload = function(box_url) {
   this.set_cookie();
 }
 
-TweetCfg.prototype.refresh = function(interval) {
+Cfg.prototype.refresh = function(interval) {
   var that = this;
   if (that.refresh_timeout) clearTimeout(that.refresh_timeout);
   jQuery(this.active_boxes).each(function(index, box) {
@@ -152,7 +152,7 @@ TweetCfg.prototype.refresh = function(interval) {
   that.refresh_timeout = setTimeout(function() { that.refresh(interval); }, (this.active_boxes.length * 1000) + interval);
 }
 
-TweetCfg.prototype.set_cookie = function() {
+Cfg.prototype.set_cookie = function() {
   var cookie_array = []
   jQuery(this.active_boxes).each(function(index, box) {
     cookie_array.push([box.title, box.url, box.removable, box.since_id, box.read_id].join('>'));
@@ -161,7 +161,7 @@ TweetCfg.prototype.set_cookie = function() {
   console.log("cookie set:", cookie_array.join('<'));
 }
 
-TweetCfg.prototype.get_cookie = function() {
+Cfg.prototype.get_cookie = function() {
   var that = this;
   var rows = jQuery.cookie('little_boxes');
   console.log("cookie get:", rows);

@@ -23,6 +23,6 @@ String.prototype.supplant = function (o) {
   }
 })();
 if (!window.console) window.console = { log: function() {} };
-var config = new TweetCfg();
+var config = new Cfg();
 config.get_cookie();
 config.refresh(settings.refresh);
