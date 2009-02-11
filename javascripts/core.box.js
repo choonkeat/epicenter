@@ -153,37 +153,26 @@ Box.prototype.time_ago = function(str) {
 Box.prototype.render_tweet = function(index, item) {
   var that = this;
   item.created_at_ago = '#';
-  if (item.source) item.source = item.source.replace(/^<a /g, '<a target="_blank" ');
-  item.text = item.text.replace(/(\w+:\/\/\S+)/g, '<a href="$1" target="_blank">$1</a>');
-  if (item.in_reply_to_screen_name) {
-    // link to reply or profile, based on api data
-    var replace_with = (item.in_reply_to_status_id ? config.status_link : config.profile_link).supplant({
-      name:item.in_reply_to_screen_name,
-      id: (item.in_reply_to_status_id || '')
-    });
-    var replyto_regexp = new RegExp('@' + item.in_reply_to_screen_name, 'gi')
-    item.text = item.text.replace(replyto_regexp, replace_with);
-  } else {
-    // no api info, guesstimating
-    item.text = item.text.replace(/(@(\w+))/g, config.profile_link.supplant({ name: "$2"}));
-  }
-  
   if (! item.user) item.user = { screen_name: item.from_user, name: item.from_user }
   var new_item = jQuery(config.tweet_html.supplant(item).supplant(item.user));
   that.add_item(new_item);
   item.html_element = new_item[0];
   if (! item.source) jQuery('.source', new_item).remove();
-  if (item.in_reply_to_status_id) {
-    setTimeout(function() {
-      var in_reply_to = jQuery('.tweet-' + item.in_reply_to_status_id, that.ol);
-      if (in_reply_to.length > 0) {
-        if ((that.read_id == item.in_reply_to_status_id) && in_reply_to.next()[0]) {
-          var match = "" + in_reply_to.next()[0].className.match(/tweet-(\d+)/);
-          that.mark_read(match[0]);
-        }
-        in_reply_to.insertBefore(new_item);
-        in_reply_to.append(new_item);
-      }
-    }, 500);
+}
+
+Box.add_before_hook = function(hook) {
+  var old_method = Box.prototype.render_tweet;
+  Box.prototype.render_tweet = function() {
+    hook.apply(this, arguments);
+    return old_method.apply(this, arguments);
+  }
+}
+
+Box.add_after_hook = function(hook) {
+  var old_method = Box.prototype.render_tweet;
+  Box.prototype.render_tweet = function() {
+    var value = old_method.apply(this, arguments);
+    hook.apply(this, arguments);
+    return value;
   }
 }
