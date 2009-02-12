@@ -31,7 +31,9 @@
 
   function add_thread_link(that, item) {
     var new_item = jQuery('.tweet-' + item.id, that.ol);
-    var see_thread = jQuery('<a href="#" class="thread-link">see thread</a>');
+    var see_thread = jQuery('<a href="#" title="Pulls status #{title} into view" class="thread-link">see thread</a>'.supplant({
+      title: item.in_reply_to_status_id
+    }));
     see_thread.appendTo(new_item).click(function(event) {
       event.preventDefault();
       event.stopPropagation();
@@ -40,7 +42,7 @@
       var status_url = settings.urls.status_url.supplant({ status_id: item.in_reply_to_status_id });
       jQuery.getJSON(status_url, function(json) {
         console.log("individual tweet", json);
-        that.insert_tweets([json]);
+        that.render_tweet(0, json);
         see_thread.unbind().remove();
         attach_to_parent(that, item);
         new_item.removeClass('unread');
