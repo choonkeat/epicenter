@@ -59,7 +59,8 @@
 </div>
 <pre class="blurb">
 1. Authenticate directly with twitter.com - No middle man.
-2. Click "show settings" to begin...
+2. Think of this as a skin over twitter.com website.
+3. To begin, click &ldquo;<strong>show settings &raquo; show friends</strong>&rdquo;
 </pre>
 <pre class="blurb" style="font-size: 10px">
 &copy; 2009 | <a href="http://blog.choonkeat.com">Chew Choon Keat</a> | <a href="http://github.com/choonkeat/epicenter">Code</a>
@@ -80,6 +81,7 @@ var settings = {
     search_url:           "http://search.twitter.com/search.json?q={query}&callback=?&count=50",
     friends_url:          "http://twitter.com/statuses/friends.json?callback=?",
     status_url:           "http://twitter.com/statuses/show/{status_id}.json?callback=?",
+    reply_to_url:         "http://twitter.com/home?in_reply_to_status_id={id}&status=@{screen_name}+",
     update_status_url:    "http://twitter.com/statuses/update.json?callback=?"
   }
 }
@@ -89,6 +91,8 @@ var settings = {
 <script src="javascripts/jquery.cookie.js"></script>
 <script src="javascripts/core.cfg.js"></script>
 <script src="javascripts/core.box.js"></script>
+<script src="javascripts/plugin.box.menu.js"></script>
+<script src="javascripts/plugin.box.reply.js"></script>
 <script src="javascripts/plugin.box.smartlink.js"></script>
 <script src="javascripts/plugin.box.threading.js"></script>
 <script src="javascripts/application.js"></script>

@@ -31,26 +31,19 @@
 
   function add_thread_link(that, item) {
     var new_item = jQuery('.tweet-' + item.id, that.ol);
-    var see_thread = jQuery('<a href="#" title="Pulls status #{title} into view" class="thread-link">see thread</a>'.supplant({
-      title: item.in_reply_to_status_id
-    }));
-    see_thread.appendTo(new_item).click(function(event) {
-      event.preventDefault();
-      event.stopPropagation();
+    that.add_menu_action("See thread", item.html_element, function(index, item) {
       var in_reply_to = get_in_reply_to(that, item);
       if (in_reply_to.length > 0) return attach_to_parent(that, item);
       var status_url = settings.urls.status_url.supplant({ status_id: item.in_reply_to_status_id });
       jQuery.getJSON(status_url, function(json) {
-        console.log("individual tweet", json);
         that.render_tweet(0, json);
-        see_thread.unbind().remove();
         attach_to_parent(that, item);
-        new_item.removeClass('unread');
       });
+      that.remove_menu_action("See thread", item.html_element);
     });
   }
 
-  function attach_to_parent(that, item) {
+  function attach_to_parent(that, item, first_attempt) {
     var new_item = jQuery('.tweet-' + item.id, that.ol);
     var in_reply_to = get_in_reply_to(that, item);
     if (in_reply_to.length > 0) {
@@ -60,13 +53,13 @@
       }
       in_reply_to.insertBefore(new_item);
       in_reply_to.append(new_item);
-    } else {
+    } else if (first_attempt) {
       add_thread_link(that, item);
     }
   }
 
   Box.add_after_hook(function(index, item) {
     var that = this;
-    if (item.in_reply_to_status_id) setTimeout(function() { attach_to_parent(that, item); }, 500);
+    if (item.in_reply_to_status_id) setTimeout(function() { attach_to_parent(that, item, true); }, 500);
   });
 })();

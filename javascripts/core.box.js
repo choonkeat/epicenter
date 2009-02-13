@@ -181,3 +181,12 @@ Box.add_after_hook = function(hook) {
     return value;
   }
 }
+
+Box.add_after_create_hook = function(hook) {
+  var old_method = Box.prototype.create;
+  Box.prototype.create = function() {
+    var value = old_method.apply(this, arguments);
+    hook.apply(this, arguments);
+    return value;
+  }
+}

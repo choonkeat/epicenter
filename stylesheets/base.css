@@ -165,3 +165,8 @@ li.tweet:hover {
 .tweet .thread-link {
   margin-left: 3px;
 }
+
+.tweet select.menu {
+  border: 1px #ccc solid;
+  display: none;
+}
