@@ -23,43 +23,42 @@
  * link, and dynamically pull it in if user clicks
  */
 (function() {
-  function get_in_reply_to(that, item) {
-    var in_reply_to = jQuery('.tweet-' + item.in_reply_to_status_id, that.ol);
+  function get_in_reply_to(that, tweet_json) {
+    var in_reply_to = jQuery('.tweet-' + tweet_json.in_reply_to_status_id, that.ol);
     while (in_reply_to.parents('.tweet')[0]) { in_reply_to = in_reply_to.parents('.tweet'); }
     return in_reply_to;
   }
 
-  function add_thread_link(that, item) {
-    var new_item = jQuery('.tweet-' + item.id, that.ol);
-    that.add_menu_action("See thread", item.html_element, function(index, item) {
-      var in_reply_to = get_in_reply_to(that, item);
-      if (in_reply_to.length > 0) return attach_to_parent(that, item);
-      var status_url = settings.urls.status_url.supplant({ status_id: item.in_reply_to_status_id });
+  function add_thread_link(that, tweet_json) {
+    that.add_menu_action("See thread", tweet_json.html_element, function(index, tweet_json) {
+      var in_reply_to = get_in_reply_to(that, tweet_json);
+      if (in_reply_to.length > 0) return attach_to_parent(that, tweet_json);
+      var status_url = settings.urls.status_url.supplant({ status_id: tweet_json.in_reply_to_status_id });
       jQuery.getJSON(status_url, function(json) {
         that.render_tweet(0, json);
-        attach_to_parent(that, item);
+        attach_to_parent(that, tweet_json);
       });
-      that.remove_menu_action("See thread", item.html_element);
+      that.remove_menu_action("See thread", tweet_json.html_element);
     });
   }
 
-  function attach_to_parent(that, item, first_attempt) {
-    var new_item = jQuery('.tweet-' + item.id, that.ol);
-    var in_reply_to = get_in_reply_to(that, item);
+  function attach_to_parent(that, tweet_json, first_attempt) {
+    var new_tweet_li = jQuery('.tweet-' + tweet_json.id, that.ol);
+    var in_reply_to = get_in_reply_to(that, tweet_json);
     if (in_reply_to.length > 0) {
-      if ((that.read_id == item.in_reply_to_status_id) && in_reply_to.next()[0]) {
+      if ((that.read_id == tweet_json.in_reply_to_status_id) && in_reply_to.next()[0]) {
         var match = "" + in_reply_to.next()[0].className.match(/tweet-(\d+)/);
         that.mark_read(match[0]);
       }
-      in_reply_to.insertBefore(new_item);
-      in_reply_to.append(new_item);
+      in_reply_to.insertBefore(new_tweet_li);
+      in_reply_to.append(new_tweet_li);
     } else if (first_attempt) {
-      add_thread_link(that, item);
+      add_thread_link(that, tweet_json);
     }
   }
 
-  Box.add_after_hook(function(index, item) {
+  Box.add_after_hook(function(index, tweet_json) {
     var that = this;
-    if (item.in_reply_to_status_id) setTimeout(function() { attach_to_parent(that, item, true); }, 500);
+    if (tweet_json.in_reply_to_status_id) setTimeout(function() { attach_to_parent(that, tweet_json, true); }, 500);
   });
 })();

@@ -69,16 +69,16 @@ Box.prototype.create = function() {
   });
 
   that.ol = jQuery('#' + that.element_id + ' ol');
-  that.add_item = function(new_item) {
+  that.add_tweet_li = function(new_tweet_li) {
     if (that.last_inserted) {
-      that.last_inserted.after(new_item);
+      that.last_inserted.after(new_tweet_li);
     } else if (that.ol.children()[0]) {
-      that.ol.prepend(new_item);
+      that.ol.prepend(new_tweet_li);
     } else {
-      that.ol.append(new_item);
+      that.ol.append(new_tweet_li);
     }
-    that.last_inserted = new_item;
-    return new_item;
+    that.last_inserted = new_tweet_li;
+    return new_tweet_li;
   }
 }
 
@@ -155,14 +155,14 @@ Box.prototype.insert_tweets = function(json) {
   if (that.read_id) jQuery('li.tweet-' + that.read_id, that.ol).removeClass('unread').nextAll().removeClass('unread');
 }
 
-Box.prototype.render_tweet = function(index, item) {
+Box.prototype.render_tweet = function(index, tweet_json) {
   var that = this;
-  item.created_at_ago = '#';
-  if (! item.user) item.user = { screen_name: item.from_user, name: item.from_user }
-  var new_item = jQuery(config.tweet_html.supplant(item).supplant(item.user));
-  that.add_item(new_item);
-  item.html_element = new_item[0];
-  if (! item.source) jQuery('.source', new_item).remove();
+  tweet_json.created_at_ago = '#';
+  if (! tweet_json.user) tweet_json.user = { screen_name: tweet_json.from_user, name: tweet_json.from_user }
+  var tweet_li = jQuery(config.tweet_html.supplant(tweet_json).supplant(tweet_json.user));
+  that.add_tweet_li(tweet_li);
+  tweet_json.html_element = tweet_li[0];
+  if (! tweet_json.source) jQuery('.source', tweet_li).remove();
 }
 
 Box.add_before_hook = function(hook) {

@@ -20,19 +20,19 @@
  * - to the specific status if possible
  * - otherwise to the user's profile
  */
-Box.add_before_hook(function(index, item) {
-  if (item.source) item.source = item.source.replace(/^<a /g, '<a target="_blank" ');
-  item.text = item.text.replace(/(\w+:\/\/\S+)/g, '<a href="$1" target="_blank">$1</a>');
-  if (item.in_reply_to_screen_name) {
+Box.add_before_hook(function(index, tweet_json) {
+  if (tweet_json.source) tweet_json.source = tweet_json.source.replace(/^<a /g, '<a target="_blank" ');
+  tweet_json.text = tweet_json.text.replace(/(\w+:\/\/\S+)/g, '<a href="$1" target="_blank">$1</a>');
+  if (tweet_json.in_reply_to_screen_name) {
     // link to reply or profile, based on api data
-    var replace_with = (item.in_reply_to_status_id ? config.status_link : config.profile_link).supplant({
-      name:item.in_reply_to_screen_name,
-      id: (item.in_reply_to_status_id || '')
+    var replace_with = (tweet_json.in_reply_to_status_id ? config.status_link : config.profile_link).supplant({
+      name:tweet_json.in_reply_to_screen_name,
+      id: (tweet_json.in_reply_to_status_id || '')
     });
-    var replyto_regexp = new RegExp('@' + item.in_reply_to_screen_name, 'gi')
-    item.text = item.text.replace(replyto_regexp, replace_with);
+    var replyto_regexp = new RegExp('@' + tweet_json.in_reply_to_screen_name, 'gi')
+    tweet_json.text = tweet_json.text.replace(replyto_regexp, replace_with);
   } else {
     // no info, guesstimating & pointing to profile
-    item.text = item.text.replace(/(@(\w+))/g, config.profile_link.supplant({ name: "$2"}));
+    tweet_json.text = tweet_json.text.replace(/(@(\w+))/g, config.profile_link.supplant({ name: "$2"}));
   }
 });
