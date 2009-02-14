@@ -167,6 +167,12 @@ li.tweet:hover {
 }
 
 .tweet select.menu {
-  border: 1px #ccc solid;
+  border-width: 0px;
   display: none;
+  float: left;
+  position: relative;
+  left: 4px;
+  top: 3px;
+  width: 49px;
+  margin-right: -49px;
 }

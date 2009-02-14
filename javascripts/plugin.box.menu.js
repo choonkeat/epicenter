@@ -1,10 +1,10 @@
 (function() {
   var select_html =
-  "<select class=\"menu\">\n  <option>-- choose --</op" +
-  "tion>\n</select>";
+  "<select class=\"menu\">\n  <option>- ? -</option>\n" +
+  "</select>";
   Box.add_after_hook(function(index, item) {
     var that = this;
-    item.menu = $(select_html).appendTo(item.html_element).change(function(event) {
+    item.menu = $(select_html).prependTo(item.html_element).change(function(event) {
       var fn = item.html_element[$(this).val()];
       if (fn) fn.apply(that, [index, item]);
     });
