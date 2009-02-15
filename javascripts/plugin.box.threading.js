@@ -38,6 +38,7 @@
         that.render_tweet(0, json);
         attach_to_parent(that, tweet_json);
       });
+      $(tweet_json.html_element).addClass('seen-thread');
       that.remove_menu_action("See thread", tweet_json.html_element);
     });
   }

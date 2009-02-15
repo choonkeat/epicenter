@@ -124,7 +124,11 @@ h2 button {
   filter:alpha(opacity=100);
 }
 
-li.tweet:hover {
+.tweet.seen-thread, .tweet.seen-thread:hover {
+  background-color: #ffd;
+}
+
+.tweet:hover {
   background: #efefef;
 }
 
