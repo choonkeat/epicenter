@@ -137,10 +137,13 @@ Cfg.prototype.autofit_width = function() {
   var len = jQuery('div.box').length;
   if (len > 2) jQuery('div.box').css({ width: ((100 / len) - 2)  + '%' });
   var maxheight = 0;
-  jQuery('div.box h2').each(function(index, h2) {
-    var newheight = jQuery(h2).height();
-    maxheight = (maxheight > newheight ? maxheight : newheight);
-  }).css({height: maxheight + 'px'});
+  jQuery('div.box h2').
+    css({height: ''}).
+    each(function(index, h2) {
+      var newheight = jQuery(h2).height();
+      maxheight = (maxheight > newheight ? maxheight : newheight);
+    }).
+    css({height: maxheight + 'px'});
 }
 
 Cfg.prototype.refresh = function(interval) {
