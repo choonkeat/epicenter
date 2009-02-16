@@ -116,11 +116,13 @@ Box.prototype.load = function() {
   jQuery.getJSON(composite_url, function(json) {
     that.insert_tweets(json);
   });
+  config.autofit_width();
 }
 
 Box.prototype.unload = function() {
   this.remove_button().unbind('click');
   this.ele().remove();
+  config.autofit_width();
 }
 
 Box.prototype.time_ago = function(str) {

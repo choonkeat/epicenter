@@ -59,7 +59,6 @@ var Cfg = function(options) {
     var field = jQuery('input', jQuery(this).parents('dl'))[0];
     var box = that.add_box("Search: " + field.value, settings.urls.search_url.supplant({query: encodeURIComponent(field.value)}), "removable");
     box.load();
-    window.location.hash = '#' + box.element_id;
   });
   jQuery("#group_button").click(function(event) {
     event.preventDefault(); event.stopPropagation();
@@ -67,7 +66,6 @@ var Cfg = function(options) {
     var custom_query = 'from:' + jQuery('#screennames').val().replace(/[,\s]+$/, '').split(/[,\s]+/).join(' OR from:');
     var box = that.add_box(field.value, settings.urls.search_url.supplant({query: encodeURIComponent(custom_query)}), "removable");
     box.load();
-    window.location.hash = '#' + box.element_id;
   });
   jQuery('.configure').click(function() { 
     (jQuery("#configuration:visible")[0] ? $(this).html("show settings") : $(this).html("hide settings"));
@@ -132,6 +130,17 @@ Cfg.prototype.unload = function(box_url) {
     this.active_boxes_hash[box.element_id] = null;
   }
   this.set_cookie();
+}
+
+Cfg.prototype.autofit_width = function() {
+  var that = this;
+  var len = jQuery('div.box').length;
+  if (len > 2) jQuery('div.box').css({ width: ((100 / len) - 2)  + '%' });
+  var maxheight = 0;
+  jQuery('div.box h2').each(function(index, h2) {
+    var newheight = jQuery(h2).height();
+    maxheight = (maxheight > newheight ? maxheight : newheight);
+  }).css({height: maxheight + 'px'});
 }
 
 Cfg.prototype.refresh = function(interval) {
