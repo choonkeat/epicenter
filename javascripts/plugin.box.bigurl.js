@@ -11,7 +11,7 @@
  */
 (function() {
   function bigurl_onhover(event) {
-    var link = event.target;
+    var link = this;
     if (!link.title && link.href && link.href.match(/(is\.gd|tinyurl\.com|bit\.ly|snipurl\.com)\//)) {
       $.get(settings.urls.big_url.supplant({query: encodeURIComponent(link.href)}), function(expanded_url) {
         link.href = link.title = expanded_url;
@@ -20,5 +20,5 @@
       });
     }
   }
-  $(document.body).mouseover(bigurl_onhover);
+  $('.box .message a').live('mouseover', bigurl_onhover);
 })();
