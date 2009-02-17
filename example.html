@@ -54,6 +54,27 @@
   </dl>
   </fieldset>
 </form>
+<form>
+  <fieldset><legend>Remember me</legend>
+  <dl>
+    <dt>
+      <label for="save_settings_name">Save to</label>
+      <span>give a name</span>
+    </dt>
+    <dd>
+      <input type="text" id="save_settings_name" name="settings_name" title="Requires you to authenticate with Twitter.com">
+      <button id="save_settings" title="Requires you to authenticate with Twitter.com">save settings</button>
+    </dd>
+    <dt>
+      <label for="load_settings_name">Load from</label>
+      <span>a name</span>
+    </dt>
+    <dd>
+      <input type="text" id="load_settings_name" name="settings_name" title="Requires you to authenticate with Twitter.com">
+      <button id="load_settings" title="Requires you to authenticate with Twitter.com">load settings</button>
+    </dd>
+  </dl>
+</form>
 </div>
 <div id="content">
 </div>
@@ -77,6 +98,9 @@ var settings = {
   history:   null,
   urls: {
     friends_timeline_url: "http://twitter.com/statuses/friends_timeline.json?callback=?&count=50",
+    user_timeline_url:    "http://twitter.com/statuses/user_timeline.json?callback=?&count=50",
+    user_save_url:        "http://epicenter.choonkeat.com/home/save/{screen_name}",
+    user_load_url:        "http://epicenter.choonkeat.com/home/load/{screen_name}?secret={secret}",
     replies_url:          "http://twitter.com/statuses/replies.json?callback=?&count=50",
     search_url:           "http://search.twitter.com/search.json?q={query}&callback=?&count=50",
     friends_url:          "http://twitter.com/statuses/friends.json?callback=?",

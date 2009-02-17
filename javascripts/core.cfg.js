@@ -71,6 +71,18 @@ var Cfg = function(options) {
     (jQuery("#configuration:visible")[0] ? $(this).html("show settings") : $(this).html("hide settings"));
     jQuery("#configuration").toggle('fast');
   });
+  jQuery('#save_settings').click(function(event) {
+    event.preventDefault(); event.stopPropagation();
+    that.with_twitter_id(function(user_id, user_login) {
+      that.save_user(user_id, user_login, jQuery('#save_settings_name').val());
+    });
+  });
+  jQuery('#load_settings').click(function(event) {
+    event.preventDefault(); event.stopPropagation();
+    that.with_twitter_id(function(user_id, user_login) {
+      that.load_user(user_id, user_login, jQuery('#load_settings_name').val());
+    });
+  });
   jQuery('#screennames,#group').focus(function() {
     if (! that.friends_names) {
       that.friends_names = [];
@@ -86,6 +98,37 @@ var Cfg = function(options) {
     if (confirm("This removes ALL standard, searches & groups sections. Proceed?")) {
       jQuery.cookie('little_boxes', null, { expires: 365 });
       window.location.reload(true);
+    }
+  });
+}
+
+Cfg.prototype.with_twitter_id = function(callback_fn) {
+  jQuery.getJSON(settings.urls.user_timeline_url, function(json) {
+    console.log("with_twitter_id = ", json);
+    callback_fn(json[0].user.id, json[0].user.screen_name);
+  });
+}
+
+Cfg.prototype.save_user = function(user_id, user_login, secret) {
+  var that = this;
+  var data = { settings: jQuery.cookie('little_boxes'), secret: secret };
+  jQuery.post(settings.urls.user_save_url.supplant({screen_name: user_login}), data, function(json) {
+    console.log("json = ", json);
+    if (! json.user) alert("Oops, there were problems saving your settings " + json.error);
+  }, 'json');
+}
+
+Cfg.prototype.load_user = function(user_id, user_login, secret) {
+  var that = this;
+  jQuery.getJSON(settings.urls.user_load_url.supplant({screen_name: user_login, secret: secret}), function(json) {
+    console.log("json = ", json);
+    if (json.user) {
+      clearTimeout(that.refresh_timeout);
+      jQuery(that.active_boxes).each(function(index, cfg) { that.unload(cfg.url); });
+      that.get_cookie(json.user.settings);
+      that.refresh(settings.refresh);
+    } else {
+      alert("Oops, there were problems loading your settings " + json.error);
     }
   });
 }
@@ -170,9 +213,9 @@ Cfg.prototype.set_cookie = function() {
   console.log("cookie set:", cookie_array.join('<'));
 }
 
-Cfg.prototype.get_cookie = function() {
+Cfg.prototype.get_cookie = function(some_cookie) {
   var that = this;
-  var rows = jQuery.cookie('little_boxes');
+  var rows = (some_cookie || jQuery.cookie('little_boxes'));
   console.log("cookie get:", rows);
   if (rows) jQuery.each(rows.split('<'), function(index, row) {
     var values = row.split('>');
