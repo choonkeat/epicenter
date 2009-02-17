@@ -115,6 +115,7 @@ Cfg.prototype.save_user = function(user_id, user_login, secret) {
   jQuery.post(settings.urls.user_save_url.supplant({screen_name: user_login}), data, function(json) {
     console.log("json = ", json);
     if (! json.user) alert("Oops, there were problems saving your settings " + json.error);
+    jQuery('.configure').click();
   }, 'json');
 }
 
@@ -127,6 +128,7 @@ Cfg.prototype.load_user = function(user_id, user_login, secret) {
       jQuery(that.active_boxes).each(function(index, cfg) { that.unload(cfg.url); });
       that.get_cookie(json.user.settings);
       that.refresh(settings.refresh);
+      jQuery('.configure').click();
     } else {
       alert("Oops, there were problems loading your settings " + json.error);
     }
