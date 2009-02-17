@@ -23,6 +23,7 @@
 Box.add_before_hook(function(index, tweet_json) {
   if (tweet_json.source) tweet_json.source = tweet_json.source.replace(/^<a /g, '<a target="_blank" ');
   tweet_json.text = tweet_json.text.replace(/(\w+:\/\/\S+)/g, '<a href="$1" target="_blank">$1</a>');
+  tweet_json.in_reply_to_screen_name = tweet_json.in_reply_to_screen_name || tweet_json.to_user;
   if (tweet_json.in_reply_to_screen_name) {
     // link to reply or profile, based on api data
     var replace_with = (tweet_json.in_reply_to_status_id ? config.status_link : config.profile_link).supplant({
