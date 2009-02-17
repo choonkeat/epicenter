@@ -74,14 +74,20 @@ var Cfg = function(options) {
     event.preventDefault(); event.stopPropagation();
     that.with_twitter_id(function(user_id, user_login) {
       that.save_user(user_id, user_login, jQuery('#save_settings_name').val());
+      jQuery('#load_settings_name').val(jQuery('#save_settings_name').val());
+      window.location.hash = jQuery('#save_settings_name').val();
     });
   });
   jQuery('#load_settings').click(function(event) {
     event.preventDefault(); event.stopPropagation();
     that.with_twitter_id(function(user_id, user_login) {
       that.load_user(user_id, user_login, jQuery('#load_settings_name').val());
+      jQuery('#save_settings_name').val(jQuery('#load_settings_name').val());
+      window.location.hash = jQuery('#load_settings_name').val();
     });
   });
+  var match = window.location.hash.match(/^#(.+)$/);
+  if (match) jQuery('#load_settings_name,#save_settings_name').val(match[1]);
   jQuery('#screennames,#group').focus(function() {
     if (! that.friends_names) {
       that.friends_names = [];
@@ -194,7 +200,7 @@ Cfg.prototype.refresh = function(interval) {
   var that = this;
   if (that.refresh_timeout) clearTimeout(that.refresh_timeout);
   jQuery(this.active_boxes).each(function(index, box) {
-    setTimeout(function() { box.load(); }, index * 1000);
+    setTimeout(function() { box.load(); }, index * 2000);
   });
   var now = new Date();
   jQuery("#last_updated_at").html(
@@ -202,7 +208,7 @@ Cfg.prototype.refresh = function(interval) {
     (now.getHours() < 10 ? '0' : '') + now.getHours() + ":" +
     (now.getMinutes() < 10 ? '0' : '') + now.getMinutes()
   );
-  that.refresh_timeout = setTimeout(function() { that.refresh(interval); }, (this.active_boxes.length * 1000) + interval);
+  that.refresh_timeout = setTimeout(function() { that.refresh(interval); }, (this.active_boxes.length * 2000) + interval);
 }
 
 Cfg.prototype.set_cookie = function() {
