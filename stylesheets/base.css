@@ -107,6 +107,13 @@ h2 button {
   filter:alpha(opacity=40);
 }
 
+.tweet .message.multi-line {
+  display: block;
+  font-family: Monaco, Consolas, monospace;
+  margin-left: 63px;
+  white-space: pre;
+}
+
 .tweet .tweet {
   margin-left: 1.5em;
   opacity: 1;
