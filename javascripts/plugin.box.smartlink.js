@@ -23,7 +23,7 @@
 Box.add_before_hook(function(index, tweet_json) {
   if (tweet_json.source) tweet_json.source = tweet_json.source.replace(/^<a /g, '<a target="_blank" ');
   tweet_json.text = tweet_json.text.
-    replace(/((\w+:)\/\/(\S+)|\b((\w+\.|)\w+\.\w{2,4})\b)/g, '<a href="$2//$3$4" target="_blank">$1</a>').
+    replace(/((\w+:)\/\/(\S+)|\b((\w+\.|)\w+\.\w{2,4}(\/\S*|)))/g, '<a href="$2//$3$4" target="_blank">$1</a>').
     replace(/(@(\w+))/g, config.profile_link.supplant({ name: "$2"}));
   tweet_json.in_reply_to_screen_name = tweet_json.in_reply_to_screen_name || tweet_json.to_user;
   if (tweet_json.in_reply_to_screen_name) {
