@@ -160,6 +160,7 @@ Box.prototype.insert_tweets = function(json) {
 Box.prototype.render_tweet = function(index, tweet_json) {
   var that = this;
   tweet_json.created_at_ago = '#';
+  if (tweet_json.source.match(/&lt;/)) tweet_json.source = jQuery("<div>" + tweet_json.source + "</div>").text(); // temp bug?
   if (! tweet_json.user) tweet_json.user = { screen_name: tweet_json.from_user, name: tweet_json.from_user }
   var tweet_li = jQuery(config.tweet_html.supplant(tweet_json).supplant(tweet_json.user));
   that.add_tweet_li(tweet_li);

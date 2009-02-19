@@ -22,7 +22,9 @@
  */
 Box.add_before_hook(function(index, tweet_json) {
   if (tweet_json.source) tweet_json.source = tweet_json.source.replace(/^<a /g, '<a target="_blank" ');
-  tweet_json.text = tweet_json.text.replace(/(\w+:\/\/\S+)/g, '<a href="$1" target="_blank">$1</a>');
+  tweet_json.text = tweet_json.text.
+    replace(/((\w+:)\/\/(\S+)|\b((\w+\.|)\w+\.\w{2,4})\b)/g, '<a href="$2//$3$4" target="_blank">$1</a>').
+    replace(/(@(\w+))/g, config.profile_link.supplant({ name: "$2"}));
   tweet_json.in_reply_to_screen_name = tweet_json.in_reply_to_screen_name || tweet_json.to_user;
   if (tweet_json.in_reply_to_screen_name) {
     // link to reply or profile, based on api data
@@ -32,8 +34,5 @@ Box.add_before_hook(function(index, tweet_json) {
     });
     var replyto_regexp = new RegExp('@' + tweet_json.in_reply_to_screen_name, 'gi')
     tweet_json.text = tweet_json.text.replace(replyto_regexp, replace_with);
-  } else {
-    // no info, guesstimating & pointing to profile
-    tweet_json.text = tweet_json.text.replace(/(@(\w+))/g, config.profile_link.supplant({ name: "$2"}));
   }
 });

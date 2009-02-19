@@ -12,7 +12,7 @@
 (function() {
   function bigurl_onhover(event) {
     $('.message a', this).each(function(index, link) {
-      if (!link.title && link.href && link.href.match(/(is\.gd|tinyurl\.com|bit\.ly|snipurl\.com|twurl\.nl)\//)) {
+      if (!link.title && link.href && link.href.match(/(is\.gd|tinyurl\.com|bit\.ly|snipurl\.com|twurl\.nl|poprl\.com)\//)) {
         link.title = link.href;
         $.get(settings.urls.big_url.supplant({query: encodeURIComponent(link.href)}), function(expanded_url) {
           link.href = link.title = expanded_url;
