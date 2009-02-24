@@ -165,7 +165,7 @@ Box.prototype.render_tweet = function(index, tweet_json) {
   var tweet_li = jQuery(config.tweet_html.supplant(tweet_json).supplant(tweet_json.user));
   that.add_tweet_li(tweet_li);
   tweet_json.html_element = tweet_li[0];
-  if (tweet_json.text.match(/(\r|)\n/)) jQuery('.message', tweet_li).addClass('multi-line').appendTo(tweet_li);
+  // if (tweet_json.text.match(/(\r|)\n/)) jQuery('.message', tweet_li).addClass('multi-line').appendTo(tweet_li);
   if (! tweet_json.source) jQuery('.source', tweet_li).remove();
 }
 
