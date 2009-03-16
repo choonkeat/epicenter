@@ -36,7 +36,7 @@
     }
   });
   $('.cancel', update_status_form).click(function(event) { event.preventDefault(); update_status_form.hide(); });
-  $('.send-tweet', update_status_form).click(function(event) { update_status_form.hide(); });
+  $('.send-tweet', update_status_form).click(function(event) { update_status_form.hide('slow'); });
 
   Box.add_after_hook(function(index, tweet_json) {
     this.add_menu_action("Reply", tweet_json.html_element, function(index, tweet_json) {
