@@ -177,16 +177,20 @@ h2 button {
 }
 
 .tweet .menu, .tweet .menu * {
-  margin-left: -5000px;
+  color: #ffffff;
 }
 
 .tweet .menu.hover, .tweet .menu.hover * {
-  margin-left: 0px;
+  color: #990000;
 }
 
+.okay {
+  width: 95%;
+  margin-left: 5px;
+}
 .okay textarea {
   color: #000000;
-  width: 380px;
+  width: 95%;
   height: 5em;
   font-size: 1.2em;
 }
