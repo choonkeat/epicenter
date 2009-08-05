@@ -17,6 +17,13 @@
 */
 /* Install YIP http://www.yipyip.com/ to make use of this feature */
 (function() {
+  if (window.platform && window.platform.showNotification && !window.fluid) {
+    window.fluid = {
+      showGrowlNotification: function(options) {
+        window.platform.showNotification(options.title, options.description, options.icon);
+      }
+    }
+  }
   if (window.fluid) {
     Box.add_after_hook(function(index, tweet_json) {
       var that = this;
