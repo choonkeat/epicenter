@@ -103,9 +103,9 @@ Box.prototype.mark_since = function(some_id) {
 Box.prototype.load = function() {
   var that = this;
   if (! that.url) return;
-  var first_load = (!that.ele()[0]);
+  that.first_load = (!that.ele()[0]);
   var composite_url = that.url;
-  if (first_load) {
+  if (that.first_load) {
     console.log("create", that.url);
     that.create();
   } else if (that.since_id) {

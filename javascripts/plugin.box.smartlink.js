@@ -22,6 +22,7 @@
  */
 Box.add_before_hook(function(index, tweet_json) {
   if (tweet_json.source) tweet_json.source = tweet_json.source.replace(/^<a /g, '<a target="_blank" ');
+  tweet_json.text_plain = tweet_json.text;
   tweet_json.text = tweet_json.text.
     replace(/((\w+:)\/\/(\S+)|\b((\w+\.|)\w+\.\w{2,4}(\/\S*|)))/g, '<a href="$2//$3$4" target="_blank">$1</a>').
     replace(/(@(\w+))/g, config.profile_link.supplant({ name: "$2"}));
