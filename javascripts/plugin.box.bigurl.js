@@ -14,9 +14,9 @@
     $('.message a', this).each(function(index, link) {
       if (!link.title && link.href && link.href.match(/(is\.gd|tinyurl\.com|bit\.ly|snipurl\.com|twurl\.nl|poprl\.com)\//)) {
         link.title = link.href;
-        $.get(settings.urls.big_url.supplant({query: encodeURIComponent(link.href)}), function(expanded_url) {
-          link.href = link.title = expanded_url;
-          var match = expanded_url.match(/^\w+\:\/\/(.+)$/);
+        $.getJSON(settings.urls.big_url.supplant({query: encodeURIComponent(link.href)}), function(json) {
+          link.href = link.title = json.tinyurl;
+          var match = json.tinyurl.match(/^\w+\:\/\/(.+)$/);
           if (match[1]) link.innerHTML = '&raquo;' + match[1].substring(0, link.innerHTML.length-4) + '&laquo;';
         });
       }
