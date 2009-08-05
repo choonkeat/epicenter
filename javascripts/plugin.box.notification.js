@@ -22,9 +22,10 @@
       var that = this;
       if (that.first_load) return;
       window.fluid.showGrowlNotification({
-        title: tweet_json.user.name,
+        title: (tweet_json.user.name || tweet_json.user.screen_name),
         description: (tweet_json.text_plain || tweet_json.text),
-        icon: tweet_json.user.profile_image_url
+        icon: (tweet_json.profile_image_url || tweet_json.user.profile_image_url),
+        onclick: function() { that.read_button().click(); }
       });
     });
   }
