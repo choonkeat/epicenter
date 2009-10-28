@@ -148,9 +148,9 @@ Box.prototype.insert_tweets = function(json) {
   json = ((json && json.results) || json);
   json.unshift(0, 0);
   that.json.splice.apply(that.json, json);
-  that.json.splice(settings.max_json);
+  that.json.splice(settings.max_json, that.json.length);
   that.last_inserted = null;
-  $(json.splice(2)).each(function() { that.render_tweet.apply(that, arguments); } );
+  $(json.splice(2, json.length)).each(function() { that.render_tweet.apply(that, arguments); } );
   jQuery('li:gt(19)', that.ol).remove();
   jQuery('li .ago', that.ol).each(function(index, link) { jQuery(link).html(that.time_ago(link.title)); });
   that.mark_since();

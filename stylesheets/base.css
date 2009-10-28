@@ -160,7 +160,11 @@ h2 button {
 }
 
 .tweet .link {
-  display: inline;
+  display: inline; margin-left: 0.2em;
+}
+
+.tweet .source {
+  margin-left: 0.2em;
 }
 
 .tweet .source, .tweet .source a {
