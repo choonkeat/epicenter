@@ -102,7 +102,7 @@ var Cfg = function(options) {
   });
   jQuery('#clear_button').click(function() {
     if (confirm("This removes ALL standard, searches & groups sections. Proceed?")) {
-      jQuery.cookie('little_boxes', null, { expires: 365 });
+      if (jQuery.cookie) jQuery.cookie('little_boxes', null, { expires: 365 });
       window.location.reload(true);
     }
   });
@@ -117,7 +117,7 @@ Cfg.prototype.with_twitter_id = function(callback_fn) {
 
 Cfg.prototype.save_user = function(user_id, user_login, secret) {
   var that = this;
-  var data = { settings: jQuery.cookie('little_boxes'), secret: secret };
+  var data = { settings: (jQuery.cookie && jQuery.cookie('little_boxes')), secret: secret };
   jQuery.post(settings.urls.user_save_url.supplant({screen_name: user_login}), data, function(json) {
     jQuery.log("json = ", json);
     if (! json.user) alert("Oops, there were problems saving your settings " + json.error);
@@ -217,13 +217,13 @@ Cfg.prototype.set_cookie = function() {
   jQuery(this.active_boxes).each(function(index, box) {
     cookie_array.push([box.title, box.url, box.removable, box.since_id, box.read_id].join('>'));
   })
-  jQuery.cookie('little_boxes', cookie_array.join('<'), { expires: 365 });
+  if (jQuery.cookie) jQuery.cookie('little_boxes', cookie_array.join('<'), { expires: 365 });
   jQuery.log("cookie set:", cookie_array.join('<'));
 }
 
 Cfg.prototype.get_cookie = function(some_cookie) {
   var that = this;
-  var rows = (some_cookie || jQuery.cookie('little_boxes'));
+  var rows = (some_cookie || (jQuery.cookie && jQuery.cookie('little_boxes')));
   jQuery.log("cookie get:", rows);
   if (rows) jQuery.each(rows.split('<'), function(index, row) {
     var values = row.split('>');
