@@ -10,10 +10,10 @@ Go to http://epicenter.choonkeat.com/
 
 Open "example.html" in your browser.
 
+== Embed in your webpage
+
+Open "embed.simple.html" in your browser.
+
 == License
 
 GPL
-
-== TODO
-
-I'm missing update status.
