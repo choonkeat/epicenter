@@ -1,0 +1,63 @@
+<title>Epicenter - Open-source twitter skin</title>
+<link type="text/css" rel="stylesheet" href="stylesheets/base.css" />
+<link type="text/css" rel="stylesheet" href="stylesheets/jquery.autocomplete.css" />
+<div id="tweets">
+</div>
+<pre class="blurb" style="font-size: 10px">
+&copy; 2009 | <a href="http://blog.choonkeat.com">Chew Choon Keat</a> | <a href="http://github.com/choonkeat/epicenter">Code</a>
+</pre>
+<script>
+var settings = {
+  // READ:
+  //  http://apiwiki.twitter.com/Search+API+Documentation
+  //  http://apiwiki.twitter.com/REST+API+Documentation#RateLimiting
+  max_msec:  3600 * 1000,
+  max_count: 100,
+  max_json:  200,
+  refresh:   150 * 1000,
+  history:   null,
+  urls: {
+    twitter_home_url:     "http://twitter.com/home?status={status}",
+    friends_timeline_url: "http://twitter.com/statuses/friends_timeline.json?callback=?&count=50",
+    user_timeline_url:    "http://twitter.com/statuses/user_timeline.json?callback=?&count=50",
+    user_save_url:        "http://epicenter.choonkeat.com/home/save/{screen_name}",
+    user_load_url:        "http://epicenter.choonkeat.com/home/load/{screen_name}?secret={secret}",
+    replies_url:          "http://twitter.com/statuses/replies.json?callback=?&count=50",
+    search_url:           "http://search.twitter.com/search.json?q={query}&callback=?&count=50",
+    friends_url:          "http://twitter.com/statuses/friends.json?callback=?",
+    status_url:           "http://twitter.com/statuses/show/{status_id}.json?callback=?",
+    reply_to_url:         "http://twitter.com/home?in_reply_to_status_id={id}&status=@{screen_name}+",
+    direct_message_url:   "http://twitter.com/direct_messages/create/{screen_name}",
+    big_url:              "http://jsonp-bigurl.appspot.com/?url={query}&callback=?",
+    update_status_url:    "http://twitter.com/statuses/update.xml"
+  }
+}
+</script>
+<script src="javascripts/jquery-1.3.1.js"></script>
+<script src="javascripts/jquery.autocomplete.js"></script>
+<script src="javascripts/jquery.cookie.js"></script>
+<script src="javascripts/core.util.js"></script>
+<script src="javascripts/core.cfg.js"></script>
+<script src="javascripts/core.box.js"></script>
+<script src="javascripts/plugin.box.menu.js"></script>
+<script src="javascripts/plugin.box.reply.simple.js"></script>
+<script src="javascripts/plugin.box.smartlink.js"></script>
+<script src="javascripts/plugin.box.threading.js"></script>
+<script src="javascripts/plugin.box.bigurl.js"></script>
+<script src="javascripts/application.js"></script>
+<script>
+  jQuery(document).ready(function() {
+    jQuery('body').prepend("<h1>Gives you:</h1>");
+    jQuery('body').prepend("<pre style='padding: 1em; background-color: #eee;'>" + jQuery('script:last').html() + "</pre>");
+    jQuery('body').prepend("<h1>Embed code:</h1>");
+  });
+</script>
+<script>
+var config = new Cfg({root: 'div#tweets'});
+config.get_cookie();
+config.refresh(settings.refresh);
+var box = config.add_box("Twitter box",
+  settings.urls.search_url.supplant({query: encodeURIComponent("epicenter")})
+);
+box.load();
+</script>

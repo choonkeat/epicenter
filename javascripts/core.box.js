@@ -16,7 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 var Box = function(atitle, aurl, aremovable, asince_id, aread_id) {
-  console.log("Box.new", arguments);
+  jQuery.log("Box.new", arguments);
   this.title = atitle;
   this.element_id = atitle.replace(/\W+/g, '-');
   var suffix = "";
@@ -106,7 +106,7 @@ Box.prototype.load = function() {
   that.first_load = (!that.ele()[0]);
   var composite_url = that.url;
   if (that.first_load) {
-    console.log("create", that.url);
+    jQuery.log("create", that.url);
     that.create();
   } else if (that.since_id) {
     composite_url += '&since_id=' + that.since_id;

@@ -16,6 +16,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 var Cfg = function(options) {
+  options = options || {};
   this.active_boxes = [];
   this.active_boxes_hash = {};
   this.box_html =
@@ -41,7 +42,7 @@ var Cfg = function(options) {
   this.profile_link =
   "<a href=\"http://twitter.com/{name}\" target=\"_bla" +
   "nk\">@{name}</a>";
-  this.root = jQuery('#content');
+  this.root = jQuery(options.root || '#content');
 
   var that = this;
   jQuery("#configuration input[type='checkbox']").click(function(event) {
@@ -49,7 +50,7 @@ var Cfg = function(options) {
     if (checkbox.checked) {
       that.add_box(checkbox.name, settings.urls[checkbox.id], false).load();
     } else {
-      console.log("Unload ", settings.urls[checkbox.id]);
+      jQuery.log("Unload ", settings.urls[checkbox.id]);
       that.unload(settings.urls[checkbox.id]);
     }
   });
@@ -109,7 +110,7 @@ var Cfg = function(options) {
 
 Cfg.prototype.with_twitter_id = function(callback_fn) {
   jQuery.getJSON(settings.urls.user_timeline_url, function(json) {
-    console.log("with_twitter_id = ", json);
+    jQuery.log("with_twitter_id = ", json);
     callback_fn(json[0].user.id, json[0].user.screen_name);
   });
 }
@@ -118,7 +119,7 @@ Cfg.prototype.save_user = function(user_id, user_login, secret) {
   var that = this;
   var data = { settings: jQuery.cookie('little_boxes'), secret: secret };
   jQuery.post(settings.urls.user_save_url.supplant({screen_name: user_login}), data, function(json) {
-    console.log("json = ", json);
+    jQuery.log("json = ", json);
     if (! json.user) alert("Oops, there were problems saving your settings " + json.error);
     jQuery('.configure').click();
   }, 'json');
@@ -127,7 +128,7 @@ Cfg.prototype.save_user = function(user_id, user_login, secret) {
 Cfg.prototype.load_user = function(user_id, user_login, secret) {
   var that = this;
   jQuery.getJSON(settings.urls.user_load_url.supplant({screen_name: user_login, secret: secret}), function(json) {
-    console.log("json = ", json);
+    jQuery.log("json = ", json);
     if (json.user) {
       clearTimeout(that.refresh_timeout);
       jQuery(that.active_boxes).each(function(index, cfg) { that.unload(cfg.url); });
@@ -142,7 +143,7 @@ Cfg.prototype.load_user = function(user_id, user_login, secret) {
 
 Cfg.prototype.set_autocomplete = function(new_array, undo_earlier) {
   if (undo_earlier) jQuery('#screennames').unautocomplete();
-  console.log("set autocomplete", new_array.length, new_array);
+  jQuery.log("set autocomplete", new_array.length, new_array);
   $("#screennames").autocomplete(new_array, {
     multiple: true,
     mustMatch: false,
@@ -217,13 +218,13 @@ Cfg.prototype.set_cookie = function() {
     cookie_array.push([box.title, box.url, box.removable, box.since_id, box.read_id].join('>'));
   })
   jQuery.cookie('little_boxes', cookie_array.join('<'), { expires: 365 });
-  console.log("cookie set:", cookie_array.join('<'));
+  jQuery.log("cookie set:", cookie_array.join('<'));
 }
 
 Cfg.prototype.get_cookie = function(some_cookie) {
   var that = this;
   var rows = (some_cookie || jQuery.cookie('little_boxes'));
-  console.log("cookie get:", rows);
+  jQuery.log("cookie get:", rows);
   if (rows) jQuery.each(rows.split('<'), function(index, row) {
     var values = row.split('>');
     that.add_box.apply(that, values);

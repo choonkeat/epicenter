@@ -14,11 +14,12 @@ String.prototype.supplant = function (o) {
       while ((now - settings.history[settings.history.length-1]) > settings.max_msec) { settings.history.pop(); }
     }
     if (limited_request && settings.history.length >= settings.max_count) {
-      console.log("throttled", arguments, this.calls[this.calls.length-1]);
+      jQuery.log("throttled", arguments, this.calls[this.calls.length-1]);
     } else {
-      console.log("calling ", arguments);
+      jQuery.log("calling ", arguments);
       window.debug_callback = arguments[1];
       return old_jQuery_getJSON.apply(jQuery, arguments);
     }
-  }
+  };
+  jQuery.log = function() { };
 })();
