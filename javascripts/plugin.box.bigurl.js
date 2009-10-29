@@ -17,7 +17,7 @@
         $.getJSON(settings.urls.big_url.supplant({query: encodeURIComponent(link.href)}), function(json) {
           link.href = link.title = json.tinyurl;
           var match = json.tinyurl.match(/^\w+\:\/\/(.+)$/);
-          if (match[1]) link.innerHTML = '&raquo;' + match[1].substring(0, link.innerHTML.length-4) + '&laquo;';
+          if (match) link.innerHTML = '&raquo;' + match[1].substring(0, link.innerHTML.length-4) + '&laquo;';
         });
       }
     });
