@@ -17,7 +17,7 @@ String.prototype.supplant = function (o) {
       jQuery.log("throttled", arguments, this.calls[this.calls.length-1]);
     } else {
       jQuery.log("calling ", arguments);
-      window.debug_callback = arguments[1];
+      if (settings.debug_callback) window.debug_callback = arguments[1];
       return old_jQuery_getJSON.apply(jQuery, arguments);
     }
   };
