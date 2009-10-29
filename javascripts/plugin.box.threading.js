@@ -25,7 +25,6 @@
 (function() {
   function get_in_reply_to(that, tweet_json) {
     var in_reply_to = jQuery('.tweet-' + tweet_json.in_reply_to_status_id, that.ol);
-    while (in_reply_to.parents('.tweet')[0]) { in_reply_to = in_reply_to.parents('.tweet'); }
     return in_reply_to;
   }
 
@@ -44,15 +43,14 @@
   }
 
   function attach_to_parent(that, tweet_json, first_attempt) {
-    var new_tweet_li = jQuery('.tweet-' + tweet_json.id, that.ol);
     var in_reply_to = get_in_reply_to(that, tweet_json);
     if (in_reply_to.length > 0) {
+      var new_tweet_li = jQuery('.tweet-' + tweet_json.id, that.ol);
       if ((that.read_id == tweet_json.in_reply_to_status_id) && in_reply_to.next()[0]) {
         var match = "" + in_reply_to.next()[0].className.match(/tweet-(\d+)/);
         that.mark_read(match[0]);
       }
-      in_reply_to.insertBefore(new_tweet_li);
-      in_reply_to.append(new_tweet_li);
+      new_tweet_li.append(in_reply_to);
     } else if (first_attempt) {
       add_thread_link(that, tweet_json);
     }
