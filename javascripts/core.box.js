@@ -125,24 +125,6 @@ Box.prototype.unload = function() {
   config.autofit_width();
 }
 
-Box.prototype.time_ago = function(str) {
-  function quantity(num, unit) {
-    return parseInt(num) + " " + unit + (num >= 2 ? "s" : "");
-  }
-  var diff_minutes = ((new Date()).getTime() - Date.parse(str)) / 1000 / 60;
-  if (diff_minutes < 1) {
-    return "moments ago";
-  } else if (diff_minutes < 60) {
-    return quantity(diff_minutes, "minute") + ' ago';
-  } else if (diff_minutes < 1440) {
-    return quantity((diff_minutes / 60), "hour") + ' ago';
-  } else if (diff_minutes < 43200) {
-    return quantity((diff_minutes / 1440), "day") + ' ago';
-  } else {
-    return quantity((diff_minutes / 43200), "month") + ' ago';
-  }
-}
-
 Box.prototype.insert_tweets = function(json) {
   var that = this;
   json = ((json && json.results) || json);
@@ -152,7 +134,7 @@ Box.prototype.insert_tweets = function(json) {
   that.last_inserted = null;
   $(json.splice(2, json.length)).each(function() { that.render_tweet.apply(that, arguments); } );
   jQuery('li:gt(19)', that.ol).remove();
-  jQuery('li .ago', that.ol).each(function(index, link) { jQuery(link).html(that.time_ago(link.title)); });
+  jQuery('li .ago', that.ol).time_ago();
   that.mark_since();
   if (that.read_id) jQuery('li.tweet-' + that.read_id, that.ol).removeClass('unread').nextAll().removeClass('unread');
 }
